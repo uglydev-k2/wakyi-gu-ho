@@ -1,0 +1,36 @@
+const assert = require('node:assert/strict');
+global.window = {};
+require('../config.js');
+require('../model.js');
+const M = window.VIBE_MODEL;
+for (const stage of window.QUIZ_CONFIG.stages) {
+  const best = M.assess(Array(8).fill(0), stage.id);
+  const worst = M.assess(Array(8).fill(3), stage.id);
+  assert.equal(best.name, 'Solid Ground');
+  assert.equal(best.percent, 0);
+  assert(best.categories.every(c => c.value === 100));
+  assert.equal(worst.name, 'Solo Group Work');
+  assert.equal(worst.percent, 100);
+  assert(worst.categories.every(c => c.value === 0));
+  assert.equal(worst.safety, true);
+}
+const a = [0,0,0,0,3,0,0,0];
+const summary = M.assess(a, 'talking');
+assert.equal(summary.categories.find(c => c.id === 'clarity').value, 50);
+assert.equal(summary.categories.find(c => c.id === 'consistency').value, 100);
+assert.equal(summary.categories.find(c => c.id === 'effort').value, 100);
+assert.notEqual(M.questionsForStage('talking')[3].text, M.questionsForStage('relationship')[3].text);
+assert.equal(window.QUIZ_CONFIG.questions[3].text, 'What have you actually said to each other about this relationship?');
+const before = JSON.stringify(a);
+const comparison = M.compare(summary, M.assess(Array(8).fill(3), 'relationship'));
+assert.equal(comparison.differentStages, true);
+assert.equal(comparison.topics.length, 3);
+assert(comparison.categories.every(c => c.gap >= 0 && c.gap <= 100));
+assert.equal(JSON.stringify(a), before);
+assert(!('answers' in summary));
+assert.equal(M.compare(summary, summary).topics.length, 0);
+assert.throws(() => M.assess(Array(8), 'dating'));
+assert.throws(() => M.assess([0], 'dating'));
+assert.throws(() => M.assess(Array(8).fill(4), 'dating'));
+assert.throws(() => M.questionsForStage('unknown'));
+console.log('Stage-specific scoring, breakdowns, comparison, privacy shape, and invalid-input checks passed.');
