@@ -30,7 +30,7 @@ Run checks with `node tests/model.test.cjs`.
 GitHub Pages publishes `main` from `/(root)`. Future commits automatically deploy. When changing assets, update the version query strings in index.html so previous visitors receive fresh files.
 
 ## Privacy
-Answers and summary state stay in memory in the current browser tab. No accounts, analytics, cookies, local/session storage, or answer-saving backend. Closing or refreshing clears state; Home/Exit and starting a new check also reset it. The browser still downloads normal static files from GitHub Pages.
+Answers and summary state stay in memory in the current browser tab. No visitor accounts, cookies, local/session storage, or answer-saving backend. Cloudflare Web Analytics counts aggregate visits and page performance; no quiz answers, verdicts, stages, or partner summaries are sent as analytics events. Closing or refreshing clears state; Home/Exit and starting a new check also reset it. The browser still downloads normal static files from GitHub Pages.
 
 A share card contains only the verdict, emoji, roast, and playful meter reading—not the selected stage or personal answers. Saving and sharing require the visitor’s action.
 
@@ -49,3 +49,8 @@ Category strength = 100 minus the category’s normalized assumption score:
 A serious conflict response adds a supportive note regardless of total. Native share sheets, emoji appearance, and app-specific posting options depend on the browser/OS. The site never posts to a Status or Story automatically.
 
 A vibe check, not a relationship diagnosis.
+
+## View anonymous visits
+Open https://dash.cloudflare.com/01965082908bd81736089d8d6a70db27/web-analytics while signed into your Cloudflare account. Select uglydev-k2.github.io, choose a date range, and view Visits / Page views. Filter the path to /wakyi-gu-ho/ if you later track other sites on the same hostname.
+
+The standard Cloudflare beacon is installed in index.html. The public beacon token is intended to appear in page source; it is not an account API key. No custom quiz events or session replay are configured. Counts begin after installation, cannot recover previous traffic, and may omit visits blocked by browser privacy tools. The owner’s test visits may appear. Dashboard data can take several minutes to arrive.
